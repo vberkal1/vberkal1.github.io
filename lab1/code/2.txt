@@ -1,0 +1,12 @@
+@startuml
+skinparam class {
+	BackgroundColor White
+	ArrowColor Black
+	BorderColor Black
+}
+class "Заказчик, Строитель" as P {
+ Пилорама
+Изготовить бруски (бревно, инструкция)
+}
+hide circle
+@enduml

@@ -1,0 +1,16 @@
+@startuml
+actor "Управляющий" as owner
+boundary "Система управления предприятием" as app
+entity "БД" as data
+actor "Рабочие" as trainee
+
+owner-> app : Прием заказа
+app-> data : Запись заказа
+owner-> app : Постановка задач по производству
+app-> data : Запись задач
+data-> trainee : Наименование и количество необходимой продукции
+
+owner-> app : Заказ материалов
+app-> data : Запись имеющихся материалов
+data-> trainee : Передача материалов на производство
+@enduml

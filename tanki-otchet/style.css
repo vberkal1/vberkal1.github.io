@@ -1,0 +1,78 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+hr{
+    margin-top: 20px;
+    border: none;
+    height: 1px;
+    background-color: #ccc;
+}
+
+.container {
+  padding: 0 110px;
+}
+
+.header {
+  padding: 20px;
+  background-color: black;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  width: 100%;
+}
+
+.title-list {
+  margin-top: 20px;
+  min-height: 90vh;
+  padding: 20px 80px;
+  width: 100%;
+  text-align: center;
+  box-shadow: -2px 1px 13px -1px rgba(34, 60, 80, 0.2);
+
+}
+
+.title-list_img {
+  margin: 60px auto;
+  width: 200px;
+  height: auto;
+}
+
+.title-list_img img {
+  height: 100%;
+  width: 100%;
+}
+
+.title-list_text-wrapper{
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.title-list_text-wrapper_left{
+    text-align: left;
+}
+.title-list_text-wrapper_right{
+    text-align: right;
+}
+
+.lab1{
+    text-align: left;
+    font-size: 20px;
+}
+
+.lab1_title{
+    text-align: center;
+    margin: 40px;
+}
+
+.lab1_list{
+    margin: 20px 0 0 20px;
+}
+
+.lab1_list_doted{
+    margin-top: 20px;
+    list-style: none;
+}

@@ -82,8 +82,8 @@ class GameObject {
     const xSign = Math.sign(newSpeed.x);
     const ySign = Math.sign(newSpeed.y);
     if (
-      newSpeed.x * xSign > EPS
-      || newSpeed.y * ySign > EPS
+      newSpeed.x * xSign > TanksGame.EPS
+      || newSpeed.y * ySign > TanksGame.EPS
       && (
         this.physicsStats.friction !== 0
         || this.physicsStats.normalFriction !== 0
@@ -94,7 +94,7 @@ class GameObject {
       let relXFrictionForce = 0;
       if (this.physicsStats.friction !== 0) {
         const relXSign = Math.sign(relSpeed.x);
-        if (relSpeed.x * relXSign > EPS) {
+        if (relSpeed.x * relXSign > TanksGame.EPS) {
           relXFrictionForce = -relXSign * Math.min(
             this.physicsStats.friction,
             relSpeed.x * relXSign * this.physicsStats.mass / deltaTime
@@ -106,7 +106,7 @@ class GameObject {
       let relYFrictionForce = 0;
       if (this.physicsStats.normalFriction !== 0) {
         const relYSign = Math.sign(relSpeed.y) || 1;
-        if (relSpeed.y * relYSign > EPS) {
+        if (relSpeed.y * relYSign > TanksGame.EPS) {
           relYFrictionForce = -relYSign * Math.min(
             this.physicsStats.normalFriction,
             relSpeed.y * relYSign * this.physicsStats.mass / deltaTime

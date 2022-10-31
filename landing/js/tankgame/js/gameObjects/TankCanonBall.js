@@ -7,10 +7,10 @@ class TankCanonBall extends GameObject {
     angle,
     throwSpeed,
     r,
-    spriteHref = 'tankgame/assets/img/tankCanonBall.png',
+    spriteHref = 'assets/img/tankCanonBall.png',
   ) {
 
-    const startSpeed = 10;
+    const startSpeed = 20;
     const speed = (Vector.createByAngle(startSpeed, angle)).addVector(throwSpeed);
 
     spriteHref = undefined;
@@ -40,7 +40,6 @@ class TankCanonBall extends GameObject {
   }
 
   handleCollision(collidedObj) {
-    // this.kineticStatus.speed = new Vector(0, 0);
     if (this.game.debug) {
       this.node.style.backgroundColor = '#ff0000';
     }

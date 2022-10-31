@@ -4,7 +4,7 @@ class Tank extends GameObject {
     x,
     y,
     angle,
-    spriteHref = 'assets/img/tank.png',
+    spriteHref = 'js/tankgame/img/Tank.png',
     width = 25,
     height = 25
   ) {

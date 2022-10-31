@@ -7,7 +7,7 @@ class TankCanonBall extends GameObject {
     angle,
     throwSpeed,
     r,
-    spriteHref = 'assets/img/tankCanonBall.png',
+    spriteHref = 'js/tankgame/img/TankCannonBall.png',
   ) {
 
     const startSpeed = 20;

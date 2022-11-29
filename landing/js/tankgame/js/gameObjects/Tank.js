@@ -4,7 +4,7 @@ class Tank extends GameObject {
     x,
     y,
     angle,
-    spriteHref = 'tankgame/assets/img/tank.png',
+    spriteHref = 'js/tankgame/img/tank.png',
     width = 25,
     height = 25
   ) {
@@ -18,7 +18,7 @@ class Tank extends GameObject {
       friction: 160,
       normalFriction: 2400,
 
-      shootPerSec: 10,
+      shootPerSec: 1,
       shootCapacity: 10000,
       shootReloadTime: 2,
     }

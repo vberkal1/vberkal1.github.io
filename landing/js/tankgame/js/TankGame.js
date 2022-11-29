@@ -1,4 +1,5 @@
 class TanksGame {
+  static EPS = 0.0001;
 
   constructor(layoutNode, width = 600, height = 400) {
     this.debug = false;
@@ -15,6 +16,7 @@ class TanksGame {
     }
     this.isEngineUp = false;
     this.engineTime = 0;
+    this.timeSpeed = 1;
     this.godForce = undefined;
 
     this.#initMainNode();
@@ -53,8 +55,8 @@ class TanksGame {
       deltaTime = timestamp - prevTime;
       if (deltaTime > 1000 / fps) {
         prevTime = timestamp;
-        this.engineTime += deltaTime * timeSpeed;
-        this.#rerenderScene(deltaTime * timeSpeed);
+        this.engineTime += deltaTime * this.timeSpeed;
+        this.#rerenderScene(deltaTime * this.timeSpeed);
       }
 
       if (this.isEngineUp) {
@@ -69,9 +71,13 @@ class TanksGame {
     this.isEngineUp = false;
   }
 
-  #rerenderScene(deltaTime) {
+  #clearCanvas() {
     const ctx = this.scene.canvas.ctx;
     this.scene.canvas.ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+
+  #rerenderScene(deltaTime) {
+    this.#clearCanvas();
     const gameObjects = this.scene.objects;
 
     this.godForce.apply();
@@ -110,8 +116,7 @@ class TanksGame {
           TanksGame.#correctIntersection(firstObject, secondObject);
           firstObject.handleCollision(secondObject);
           secondObject.handleCollision(firstObject);
-          // console.log(firstObject.kineticStatus.position)
-          TanksGame.#handleCollision(firstObject, secondObject);
+          this.#handleCollision(firstObject, secondObject);
         }
       }
     }
@@ -170,12 +175,12 @@ class TanksGame {
 
       const p2 = objB.kineticStatus.position;
       const v2 = objB.kineticStatus.speed;
-      const r2 = objA.collideShape.r;
+      const r2 = objB.collideShape.r;
 
 
       // p1+v1*t - p2+v2*t = r1+r2
       //  ((P1x-V1x*t)-(P2x-V2x*t))^2 + ((P1y-V1y*t)-(P2y-V2y*t))^2 ==== (r1+r2)^2
-
+      // ((a-b*t)-(c-d*t))^2 + ((j-f*t)-(g-h*t))^2 = (r+w)^2
       const
         a =	p1.x,
         b =	v1.x,
@@ -188,30 +193,29 @@ class TanksGame {
         r =	r1,
         w =	r2;
 
-
-      const cc = -2*(r*w + g*j + a*c) + w*w - r*r + j*j + g*g + c*c + a*a;
+      const cc = -2*(r*w + g*j + a*c) - w*w - r*r + j*j + g*g + c*c + a*a;
       const bb = 2*(a*d + b*c + f*g + j*h - a*b - c*d - j*f - g*h);
       const aa = b*b + d*d + f*f + h*h - 2*(b*d + f*h);
 
-      // const dd = Math.sqrt(kk*kk - aa * cc);
-      // const t1 = (-kk - dd) / aa;
-      // const t2 = (-kk + dd) / aa;
-      // const t = Math.min(t1, t2);
-
-      const dd = Math.sqrt(bb*bb - 4 * aa * cc);
-      const t1 = (-bb + dd) / (2*aa);
-      const t2 = (-bb - dd) / (2*aa);
-      const t = Math.max(t1, t2);
+      const dd = bb*bb - 4 * aa * cc;
+      const sqrtDd = (dd >= 0) ? Math.sqrt(bb*bb - 4 * aa * cc) : 0;
+      const t1 = (-bb + sqrtDd) / (2*aa);
+      const t2 = (-bb - sqrtDd) / (2*aa);
+      const t = Math.max(t1, t2) * 1.01;
 
       p1.addVector(Vector.multiply(v1, -t));
       p2.addVector(Vector.multiply(v2, -t));
+
+      console.log('dist :', Geometry.getCutLen(p1, p2))
+      console.log('r+r :', r1 + r2)
     }
   }
 
-  static #handleCollision(objA, objB) {
+  #handleCollision(objA, objB) {
     if (
       objA.collideShape instanceof Circle && objB.collideShape instanceof Circle
     ) {
+      console.log('collide handled');
       //todo fix
 
       const aCenter = objA.kineticStatus.position;
@@ -222,28 +226,36 @@ class TanksGame {
       const bSpeed = objB.kineticStatus.speed;
       const bR = objB.collideShape.r;
 
+      console.log('objA', aCenter, aSpeed, aR);
+      console.log('objB', bCenter, bSpeed, bR);
+
       //calc in fake system
-      const compSpeed = Vector.minusVector(bSpeed, aSpeed);
-      const compSpeedScalar = compSpeed.getLen();
-      const compSpeedAngle = compSpeed.getAngle();
+      const bFakeSpeed = new Vector(0, 0);
+      const aFakeSpeed = Vector.minusVector(aSpeed, bSpeed);
+      const aFakeSpeedScalar = aFakeSpeed.getLen();
+      const aFakeSpeedAngle = aFakeSpeed.getAngle();
+
+      console.log('comp', aFakeSpeed, aFakeSpeedScalar, aFakeSpeedAngle);
 
       //calc fakeSpeed
       const hypot = aR + bR;
       const fakeYLeg = aCenter.y - bCenter.y;
 
       const hypotToYLegAngle = Geometry.getAngleHypotToCloseLeg(hypot, fakeYLeg);   //b angle
-      const compSpeedToHypotAngle = compSpeedAngle - hypotToYLegAngle;          //d angle
+      const compSpeedToHypotAngle = aFakeSpeedAngle - hypotToYLegAngle;          //d angle
 
-      const compFakeYSpeed = Geometry.getCloseLegByHypotToAngle(compSpeedScalar, compSpeedToHypotAngle);
-      const compFakeXSpeed = Geometry.getLegByLegAndHypot(compFakeYSpeed, compSpeedScalar);
+      const compFakeYSpeed = Geometry.getCloseLegByHypotToAngle(aFakeSpeedScalar, compSpeedToHypotAngle);
+      const compFakeXSpeed = Geometry.getLegByLegAndHypot(compFakeYSpeed, aFakeSpeedScalar);
 
-      const aFakeSpeed = new Vector(compFakeXSpeed, compFakeYSpeed);
-      const bFakeSpeed = Vector.minusVector(compSpeed, aFakeSpeed);
+      // const aFakeSpeed = new Vector(compFakeXSpeed, compFakeYSpeed);
+      const newBFakeSpeed = (new Vector(0, compFakeYSpeed)).rotate(hypotToYLegAngle);
+      // const bFakeSpeed = Vector.minusVector(compSpeed, aFakeSpeed);
+      const newAFakeSpeed = (new Vector(0, compFakeXSpeed)).rotate(hypotToYLegAngle + Math.PI/2);
 
       //back to old system adding fakeSpeed
       //hypotToFakeYLeg
-      objA.kineticStatus.speed = aFakeSpeed.addVector(aSpeed);
-      objB.kineticStatus.speed = bFakeSpeed.minusVector(aSpeed);
+      objA.kineticStatus.speed = Vector.addVector(newAFakeSpeed, bSpeed);
+      objB.kineticStatus.speed = Vector.addVector(newBFakeSpeed, bSpeed);
     }
   }
 
@@ -352,6 +364,13 @@ class TanksGame {
             } else {
               this.startEngine(60);
             }
+            break;
+          case 'Minus':
+            this.timeSpeed /= 1.1
+            tanksGame.addPlayer(playerA)
+            break;
+          case 'Equal':
+            this.timeSpeed *= 1.1
             break;
         }
         break;

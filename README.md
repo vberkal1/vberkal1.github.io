@@ -73,7 +73,7 @@
 * W, A, S, D - перемещение
 * Танк и снаряды можно перемещать мышкой
 
-[Work-in-progress, beta version of the game!](https://Allyxan.github.io/landing/)
+[Work-in-progress, beta version of the game!](https://vberkal1.github.io/landing/)
 
 ## ✅ Лабораторная работа 3
 

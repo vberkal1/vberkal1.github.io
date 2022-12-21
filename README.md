@@ -79,8 +79,8 @@
 
 Работа с Cisco Packet Tracer
 
-* [Отчет](https://github.com/vberkal1/vberkal1.github.io/blob/main/ИТ_Беркаль%20_ЛР3.docx)
-* [Сценарий](https://github.com/vberkal1/vberkal1.github.io/blob/main/ИТ_ЛР3_Сценарий.pka)
+* [Отчет](https://github.com/vberkal1/vberkal1.github.io/raw/main/ИТ_Беркаль%20_ЛР3.docx)
+* [Сценарий](https://github.com/vberkal1/vberkal1.github.io/raw/main/ИТ_ЛР3_Сценарий.pka)
 
 ## ✅ Экзаменационный билет №7
 
